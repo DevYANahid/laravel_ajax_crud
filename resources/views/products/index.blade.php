@@ -4,8 +4,28 @@
     <section>
         <div class="titlebar">
             <h1>Products</h1>
-            <a href="{{route('product.create')}}" class="btn-link">Add Product</button>
+            <a href="{{route('product.create')}}" class="btn-link">Add Product</a>
         </div>
+
+        @if ($message = Session::get('success'))
+           <script type="text/javascript">
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                    });
+                    Toast.fire({
+                    icon: "success",
+                    title: "{{$message}}"
+                    });
+           </script>
+        @endif
         <div class="table">
             <div class="table-filter">
                 <div>
@@ -16,24 +36,27 @@
                     </ul>
                 </div>
             </div>
-            <div class="table-search">   
-                <div>
-                    <button class="search-select">
-                       Search Product
-                    </button>
-                    <span class="search-select-arrow">
-                        <i class="fas fa-caret-down"></i>
-                    </span>
+
+            <form action="{{route('product.index')}}" accept-charset="UTF-8" role="search">
+                <div class="table-search">   
+                    <div>
+                        <button class="search-select">
+                        Search Product
+                        </button>
+                        <span class="search-select-arrow">
+                            <i class="fas fa-caret-down"></i>
+                        </span>
+                    </div>
+                    <div class="relative">
+                        <input class="search-input" type="text" name="search" placeholder="Search product..."  value="{{ request('search') }}">
+                    </div>
                 </div>
-                <div class="relative">
-                    <input class="search-input" type="text" name="search" placeholder="Search product..." value="{{ request('search') }}">
-                </div>
-            </div>
+            </form>
             <div class="table-product-head">
                 <p>Image</p>
                 <p>Name</p>
                 <p>Category</p>
-                <p>Inventory</p>
+                <p>Price</p>
                 <p>Actions</p>
             </div>
             <div class="table-product-body">
@@ -42,26 +65,25 @@
                 <img src="{{asset('image/'.$product->image)}}"/>
                 <p> {{$product->name}}</p>
                 <p> {{$product->category}}</p>
-                <p>Inventory</p>
-                <div>     
-                    <button class="btn btn-success" >
+                <p> {{$product->price}}</p>
+                <div style="display: flex">     
+                    <a href="{{route('product.edit',$product->id)}}" class="btn-link btn btn-success" style="padding-top: 5px; padding-bottom:6px" >
                         <i class="fas fa-pencil-alt" ></i> 
-                    </button>
-                    <button class="btn btn-danger" >
-                        <i class="far fa-trash-alt"></i>
-                    </button>
+                    </a>
+                    <form method="post"  action= "{{route('product.destroy', $product->id )}}" >
+                        @method('delete')
+                        @csrf
+                        <button class="btn btn-danger" onclick= "deleteConfirm(event) " >
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </form>
+                    
                 </div>
                 @endforeach
                 @endif
             </div>
             <div class="table-paginate">
-                <div class="pagination">
-                    <a href="#" disabled>&laquo;</a>
-                    <a class="active-page">1</a>
-                    <a>2</a>
-                    <a>3</a>
-                    <a href="#">&raquo;</a>
-                </div>
+                {{$products->links('layouts.pagination')}}
             </div>
         </div>
     </section>
@@ -134,4 +156,24 @@
         </div>
     </section> --}}
 </main>  
+
+<script>
+    window.deleteConfirm = function (e) {
+        e.preventDefault();
+        var form = e.target.form;
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+            });
+    }
+</script>
 @endsection

@@ -3,8 +3,9 @@
 <main class="container">
    
     <section>
-        <form method="post" action="{{route('product.store')}}" enctype="multipart/form-data">
+        <form method="post" action="{{route('product.update',$product->id)}}" enctype="multipart/form-data">
             @csrf
+            @method("PUT")
             <div class="titlebar">
                 <h1>Add Product</h1>
                 <button>Save</button>
@@ -21,67 +22,36 @@
             <div class="card">
             <div>
                     <label>Name</label>
-                    <input type="text" name="name" >
+                    <input type="text" name="name" value="{{$product->name}}" >
                     <label>Description (optional)</label>
-                    <textarea cols="10" rows="5" name="description"></textarea>
+                    <textarea cols="10" rows="5" name="description" value="{{$product->description}}">{{ $product->description}}</textarea>
                     <label>Add Image</label>
-                    <img src="" alt="" class="img-product" id="file-preview"/>
+                    <img src="{{asset('image/'.$product->image)}}" alt="" class="img-product" id="file-preview"/>
+                    <input type="hidden" name="hidden_product_image" value={{$product->image}}>
                     <input type="file" name="image" accept="image/*" onchange="showFile(event)">
                 </div>
             <div>
                     <label>Category</label>
                     <select  name="category">
                         @foreach (json_decode('{"Smartphone":"Smartphone","Smart TV":"Smart TV","Computer":"Computer"}',true) as $optionKey => $optionValue)       
-                      <option value="{{$optionKey}}" >{{$optionValue}}</option>
+                      <option value="{{$optionKey}}" {{(isset($product->category) && $product->category == $optionKey) ? 'selected' : ''}} >{{$optionValue}}</option>
                         @endforeach
                     </select>
                     <hr>
                     <label>Inventory</label>
-                    <input type="text" name="quantity" >
+                    <input type="text" name="quantity" value="{{$product->quantity}}">
                     <hr>
                     <label>Price</label>
-                    <input type="text" name="price" >
+                    <input type="text" name="price" value="{{$product->price}}" >
             </div>
             </div>
             <div class="titlebar">
                 <h1></h1>
+                <input type="hidden" name="hidden_id" value="{{$product->id}}">
                 <button>Save</button>
             </div>
         </form>
     </section>
-    {{-- <section>
-        <div class="titlebar">
-            <h1>Edit Product</h1>
-            <button>Save</button>
-        </div>
-        <div class="card">
-           <div>
-                <label>Name</label>
-                <input type="text" >
-                <label>Description (optional)</label>
-                <textarea cols="10" rows="5" ></textarea>
-                <label>Add Image</label>
-                <img src="1.jpg" alt="" class="img-product" />
-                <input type="file" >
-            </div>
-           <div>
-                <label>Category</label>
-                <select  name="" id="" >
-                    <option value="" >Email Subscription</option>
-                </select>
-                <hr>
-                <label>Inventory</label>
-                <input type="text" class="input" >
-                <hr>
-                <label>Price</label>
-                <input type="text" class="input" >
-           </div>
-        </div>
-        <div class="titlebar">
-            <h1></h1>
-            <button>Save</button>
-        </div>
-    </section> --}}
 </main>  
 
 <script>
