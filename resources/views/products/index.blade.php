@@ -40,8 +40,8 @@
                 @if (count($products) > 0)
                 @foreach ($products as $product)
                 <img src="{{asset('image/'.$product->image)}}"/>
-                <p> Product name</p>
-                <p>Category</p>
+                <p> {{$product->name}}</p>
+                <p> {{$product->category}}</p>
                 <p>Inventory</p>
                 <div>     
                     <button class="btn btn-success" >
